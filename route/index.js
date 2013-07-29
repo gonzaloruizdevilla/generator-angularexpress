@@ -9,8 +9,8 @@ module.exports = Generator;
 
 function Generator() {
   ScriptBase.apply(this, arguments);
-  this.hookFor('angular:controller');
-  this.hookFor('angular:view');
+  this.hookFor('angularexpress:controller');
+  this.hookFor('angularexpress:view');
 }
 util.inherits(Generator, ScriptBase);
 
