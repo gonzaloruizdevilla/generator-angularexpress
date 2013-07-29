@@ -2,6 +2,8 @@
 'use strict';
 var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({ port: LIVERELOAD_PORT });
+var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+var path = require('path');
 var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
 };
@@ -41,6 +43,10 @@ module.exports = function (grunt) {
         files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server']
       },<% } %>
+      jade: {
+        files: ['<%= yeoman.app %>/jade/{,**/}*.jade'],
+        tasks: ['jade']
+      },
       livereload: {
         options: {
           livereload: LIVERELOAD_PORT
@@ -59,6 +65,13 @@ module.exports = function (grunt) {
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost'
       },
+      proxies: [ // Local
+        {
+            context: '/api',
+            host: 'localhost',
+            port: 9001
+        }
+      ],
       livereload: {
         options: {
           middleware: function (connect) {
@@ -172,6 +185,19 @@ module.exports = function (grunt) {
             '<%%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%%= yeoman.dist %>/styles/fonts/*'
           ]
+        }
+      }
+    },
+    jade: {
+      view: {
+        files: {
+          '<%= yeoman.app %>/': ['<%= yeoman.app %>/jade/*.jade'],
+          '<%= yeoman.app %>/views/': ['<%= yeoman.app %>/jade/views/*.jade']
+        },
+        options: {
+          basePath: '<%= yeoman.app %>/jade/views',
+          client: false,
+          pretty: true
         }
       }
     },
@@ -313,6 +339,15 @@ module.exports = function (grunt) {
           ]
         }
       }
+    },
+    express: {
+      custom: {
+        options: {
+          hostname: 'localhost',
+          port: 9001,
+          server: path.resolve('./server/main')
+        }
+      }
     }
   });
 
@@ -324,6 +359,8 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'concurrent:server',
+      'configureProxies',
+      'express',
       'connect:livereload',
       'open',
       'watch'
