@@ -1,6 +1,6 @@
 # AngularJS & Express generator [![Build Status](https://api.travis-ci.org/gonzaloruizdevilla/generator-angularexpress.png?branch=master)](http://travis-ci.org/gonzaloruizdevilla/generator-angularexpress)
 https://travis-ci.org/gonzaloruizdevilla/generator-angularexpress
-Based on [genrator-angular](https://github.com/yeoman/generator-angular)
+Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
 
 ## Usage
