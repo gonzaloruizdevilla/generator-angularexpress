@@ -25,7 +25,11 @@
     "matchdep": "~0.1.2",
     "connect-livereload": "~0.2.0",
     "grunt-google-cdn": "~0.2.0",
-    "grunt-ngmin": "~0.0.2"
+    "grunt-ngmin": "~0.0.2",
+    "grunt-jade": "~0.4.0",
+    "grunt-express": "~0.3.3",
+    "grunt-connect-proxy": "~0.1.1",
+    "express": "~3.2.4"
   },
   "engines": {
     "node": ">=0.8.0"
