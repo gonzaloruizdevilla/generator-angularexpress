@@ -1,15 +1,13 @@
-# AngularJS generator [![Build Status](https://secure.travis-ci.org/yeoman/generator-angular.png?branch=master)](http://travis-ci.org/yeoman/generator-angular)
+# AngularJS & Express generator [![Build Status](https://secure.travis-ci.org/gonzaloruizdevilla/generator-angularexpress.png?branch=master)](http://travis-ci.org/gonzaloruizdevilla/generator-angularexpress)
 
-Maintainer: [Brian Ford](https://github.com/btford)
-
-Based on [angular-seed](https://github.com/angular/angular-seed/)
+Based on [genrator-angular](https://github.com/yeoman/generator-angular)
 
 
 ## Usage
 
-Install `generator-angular`:
+Install `generator-angularexpress`:
 ```
-npm install -g generator-angular
+npm install -g generator-angularexpress
 ```
 
 Make a new directory, and `cd` into it:
@@ -17,7 +15,7 @@ Make a new directory, and `cd` into it:
 mkdir my-new-project && cd $_
 ```
 
-Run `yo angular`, optionally passing an app name:
+Run `yo angularexpress`, optionally passing an app name:
 ```
 yo angular [app-name]
 ```
