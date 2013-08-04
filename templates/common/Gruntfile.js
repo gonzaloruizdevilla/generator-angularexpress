@@ -42,11 +42,11 @@ module.exports = function (grunt) {
       compass: {
         files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server']
-      },<% } %>
+      },<% } %><% if (jade) { %>
       jade: {
-        files: ['<%= yeoman.app %>/jade/{,**/}*.jade'],
+        files: ['<%%= yeoman.app %>/jade/{,*/}*.jade'],
         tasks: ['jade']
-      },
+      },<% } %>
       livereload: {
         options: {
           livereload: LIVERELOAD_PORT
@@ -188,20 +188,29 @@ module.exports = function (grunt) {
           ]
         }
       }
-    },
+    },<% if (jade) { %>
     jade: {
-      view: {
+      index: {
         files: {
-          '<%= yeoman.app %>/': ['<%= yeoman.app %>/jade/*.jade'],
-          '<%= yeoman.app %>/views/': ['<%= yeoman.app %>/jade/views/*.jade']
+          '<%%= yeoman.app %>/': ['<%%= yeoman.app %>/jade/index.jade']
         },
         options: {
-          basePath: '<%= yeoman.app %>/jade/views',
+          basePath: '<%%= yeoman.app %>/jade/',
+          client: false,
+          pretty: true
+        }
+      },
+      views: {
+        files: {
+          '<%%= yeoman.app %>/views/': ['<%%= yeoman.app %>/jade/views/*.jade']
+        },
+        options: {
+          basePath: '<%%= yeoman.app %>/jade/views',
           client: false,
           pretty: true
         }
       }
-    },
+    },<% } %>
     useminPrepare: {
       html: '<%%= yeoman.app %>/index.html',
       options: {
@@ -295,15 +304,18 @@ module.exports = function (grunt) {
       }
     },
     concurrent: {
-      server: [
+      server: [<% if (jade) { %>
+        'jade',<% } %>
         'coffee:dist'<% if (compassBootstrap) { %>,
         'compass:server'<% } %>
       ],
-      test: [
+      test: [<% if (jade) { %>
+        'jade',<% } %>
         'coffee'<% if (compassBootstrap) { %>,
         'compass'<% } %>
       ],
-      dist: [
+      dist: [<% if (jade) { %>
+        'jade',<% } %>
         'coffee',<% if (compassBootstrap) { %>
         'compass:dist',<% } %>
         'imagemin',
