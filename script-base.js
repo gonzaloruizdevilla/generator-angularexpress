@@ -1,5 +1,6 @@
 'use strict';
 var util = require('util');
+var fs = require('fs');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var angularUtils = require('./util.js');
@@ -86,6 +87,31 @@ Generator.prototype.htmlTemplate = function (src, dest) {
 };
 
 Generator.prototype.addScriptToIndex = function (script) {
+  var appPath = this.env.options.appPath;
+  var fullPathJade = path.join(appPath, 'jade/index.jade');
+  if (fs.existsSync(fullPathJade)) {
+    this.addScriptToIndexJade(script);
+  }else {
+    this.addScriptToIndexHtml(script);
+  }
+};
+
+Generator.prototype.addScriptToIndexJade = function (script) {
+  try {
+    var appPath = this.env.options.appPath;
+    var fullPath = path.join(appPath, 'jade/index.jade');
+    angularUtils.rewriteFile({
+      file: fullPath,
+      needle: '// endbuild',
+      splicable: [
+        'script(src="scripts/' + script + '.js")'
+      ]
+    });
+  } catch (e) {
+    console.log('\nUnable to find '.yellow + fullPath + '. Reference to '.yellow + script + '.js ' + 'not added.\n'.yellow);
+  }
+};
+Generator.prototype.addScriptToIndexHtml = function (script) {
   try {
     var appPath = this.env.options.appPath;
     var fullPath = path.join(appPath, 'index.html');
