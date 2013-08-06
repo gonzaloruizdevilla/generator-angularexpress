@@ -17,20 +17,20 @@ mkdir my-new-project && cd $_
 
 Run `yo angularexpress`, optionally passing an app name:
 ```
-yo angular [app-name]
+yo angularexpress [app-name]
 ```
 
 ## Generators
 
 Available generators:
 
-* [angular](#app) (aka [angular:app](#app))
-* [angular:controller](#controller)
-* [angular:directive](#directive)
-* [angular:filter](#filter)
-* [angular:route](#route)
-* [angular:service](#service)
-* [angular:view](#view)
+* [angularexpress](#app) (aka [angularexpress:app](#app))
+* [angularexpress:controller](#controller)
+* [angularexpress:directive](#directive)
+* [angularexpress:filter](#filter)
+* [angularexpress:route](#route)
+* [angularexpress:service](#service)
+* [angularexpress:view](#view)
 
 **Note: Generators are to be run from the root directory of your app.**
 
@@ -39,7 +39,7 @@ Sets up a new AngularJS app, generating all the boilerplate you need to get star
 
 Example:
 ```bash
-yo angular
+yo angularexpress
 ```
 
 ### Route
@@ -47,7 +47,7 @@ Generates a controller and view, and configures a route in `app/scripts/app.js` 
 
 Example:
 ```bash
-yo angular:route myroute
+yo angularexpress:route myroute
 ```
 
 Produces `app/scripts/controllers/myroute.js`:
@@ -67,7 +67,7 @@ Generates a controller in `app/scripts/controllers`.
 
 Example:
 ```bash
-yo angular:controller user
+yo angularexpress:controller user
 ```
 
 Produces `app/scripts/controllers/user.js`:
@@ -81,7 +81,7 @@ Generates a directive in `app/scripts/directives`.
 
 Example:
 ```bash
-yo angular:directive myDirective
+yo angularexpress:directive myDirective
 ```
 
 Produces `app/scripts/directives/myDirective.js`:
@@ -102,7 +102,7 @@ Generates a filter in `app/scripts/filters`.
 
 Example:
 ```bash
-yo angular:filter myFilter
+yo angularexpress:filter myFilter
 ```
 
 Produces `app/scripts/filters/myFilter.js`:
@@ -119,7 +119,7 @@ Generates an HTML view file in `app/views`.
 
 Example:
 ```bash
-yo angular:view user
+yo angularexpress:view user
 ```
 
 Produces `app/views/user.html`:
@@ -132,7 +132,7 @@ Generates an AngularJS service.
 
 Example:
 ```bash
-yo angular:service myService
+yo angularexpress:service myService
 ```
 
 Produces `app/scripts/services/myService.js`:
@@ -142,7 +142,7 @@ angular.module('myMod').service('myService', function () {
 });
 ```
 
-You can also do `yo angular:factory`, `yo angular:provider`, `yo angular:value`, and `yo angular:constant` for other types of services.
+You can also do `yo angularexpress:factory`, `yo angularexpress:provider`, `yo angularexpress:value`, and `yo angularexpress:constant` for other types of services.
 
 ## Options
 In general, these options can be applied to any generator, though they only affect generators that produce scripts.
@@ -152,7 +152,7 @@ For generators that output scripts, the `--coffee` option will output CoffeeScri
 
 For example:
 ```bash
-yo angular:controller user --coffee
+yo angularexpress:controller user --coffee
 ```
 
 Produces `app/scripts/controller/user.coffee`:
@@ -168,7 +168,7 @@ By default, generators produce unannotated code. Without annotations, AngularJS'
 
 #### Example
 ```bash
-yo angular:controller user --minsafe
+yo angularexpress:controller user --minsafe
 ```
 
 Produces `app/controller/user.js`:
