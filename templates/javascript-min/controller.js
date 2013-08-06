@@ -2,9 +2,7 @@
 
 angular.module('<%= _.camelize(appname) %>App')
   .controller('<%= _.classify(name) %>Ctrl', ['$scope', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+    $http.get("/api/awesomeThings").success(function(awesomeThings) {
+      $scope.awesomeThings = awesomeThings;
+    });
   }]);
