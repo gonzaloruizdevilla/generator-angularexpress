@@ -59,7 +59,7 @@ var Generator = module.exports = function Generator(args, options) {
         coffee: this.options.coffee,
         travis: true,
         'skip-install': this.options['skip-install']
-       }
+      }
     }
   });
 
@@ -83,7 +83,7 @@ Generator.prototype.askForBootstrap = function askForBootstrap() {
   }, {
     type: 'confirm',
     name: 'compassBootstrap',
-    message: 'Would you like to use Twitter Bootstrap for Compass (as opposed to vanilla CSS)?',
+    message: 'Would you like to use the SCSS version of Twitter Bootstrap with the Compass CSS Authoring Framework?',
     default: true,
     when: function (props) {
       return props.bootstrap;
@@ -195,7 +195,7 @@ function appendScriptsJade(jade, optimizedPath, sourceFileList, attrs) {
   return appendFilesToJade(jade, 'js', optimizedPath, sourceFileList, attrs);
 };
 
-Generator.prototype.bootstrapJS = function bootstrapJS() {
+Generator.prototype.bootstrapJs = function bootstrapJs() {
   var list;
   if (!this.bootstrap) {
     return;  // Skip if disabled.
