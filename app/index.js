@@ -176,7 +176,7 @@ Generator.prototype.bootstrapFiles = function bootstrapFiles() {
       sourceFileList: files.map(function (file) {
         return 'styles/' + file.replace('.scss', '.css');
       }),
-      searchPath: ['.tmp', 'app']
+      searchPath: '.tmp'
     });
   } else {
     this.indexFile = this.appendFiles({
@@ -186,7 +186,7 @@ Generator.prototype.bootstrapFiles = function bootstrapFiles() {
       sourceFileList: files.map(function (file) {
         return 'styles/' + file.replace('.scss', '.css');
       }),
-      searchPath: ['.tmp', 'app']
+      searchPath: '.tmp'
     });
   }
 };

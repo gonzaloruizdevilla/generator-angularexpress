@@ -15,8 +15,8 @@ var mountFolder = function (connect, dir) {
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
-  // load all grunt tasks
-  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+  require('load-grunt-tasks')(grunt);
+  require('time-grunt')(grunt);
 
   // configurable paths
   var yeomanConfig = {
@@ -41,22 +41,37 @@ module.exports = function (grunt) {
       },<% if (compassBootstrap) { %>
       compass: {
         files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['compass:server']
+        tasks: ['compass:server', 'autoprefixer']
       },<% } %><% if (jade) { %>
       jade: {
         files: ['<%%= yeoman.app %>/jade/{,*/}*.jade'],
         tasks: ['jade']
       },<% } %>
+      styles: {
+        files: ['<%%= yeoman.app %>/styles/{,*/}*.css'],
+        tasks: ['copy:styles', 'autoprefixer']
+      },
       livereload: {
         options: {
           livereload: LIVERELOAD_PORT
         },
         files: [
           '<%%= yeoman.app %>/{,*/}*.html',
-          '{.tmp,<%%= yeoman.app %>}/styles/{,*/}*.css',
+          '.tmp/styles/{,*/}*.css',
           '{.tmp,<%%= yeoman.app %>}/scripts/{,*/}*.js',
           '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
+      }
+    },
+    autoprefixer: {
+      options: ['last 1 version'],
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '.tmp/styles/',
+          src: '{,*/}*.css',
+          dest: '.tmp/styles/'
+        }]
       }
     },
     connect: {
@@ -305,23 +320,32 @@ module.exports = function (grunt) {
             'generated/*'
           ]
         }]
+      },
+      styles: {
+        expand: true,
+        cwd: '<%%= yeoman.app %>/styles',
+        dest: '.tmp/styles/',
+        src: '{,*/}*.css'
       }
     },
     concurrent: {
       server: [<% if (jade) { %>
         'jade',<% } %>
-        'coffee:dist'<% if (compassBootstrap) { %>,
-        'compass:server'<% } %>
+        'coffee:dist',<% if (compassBootstrap) { %>
+        'compass:server',<% } %>
+        'copy:styles'
       ],
       test: [<% if (jade) { %>
         'jade',<% } %>
-        'coffee'<% if (compassBootstrap) { %>,
-        'compass'<% } %>
+        'coffee',<% if (compassBootstrap) { %>
+        'compass',<% } %>
+        'copy:styles'
       ],
       dist: [<% if (jade) { %>
         'jade',<% } %>
         'coffee',<% if (compassBootstrap) { %>
         'compass:dist',<% } %>
+        'copy:styles',
         'imagemin',
         'svgmin',
         'htmlmin'
@@ -378,6 +402,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'configureProxies',
       'express',
+      'autoprefixer',
       'connect:livereload',
       'open',
       'watch'
@@ -387,6 +412,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
+    'autoprefixer',
     'connect:test',
     'karma'
   ]);
@@ -395,8 +421,9 @@ module.exports = function (grunt) {
     'clean:dist',
     'useminPrepare',
     'concurrent:dist',
+    'autoprefixer',
     'concat',
-    'copy',
+    'copy:dist',
     'cdnify',
     'ngmin',
     'cssmin',
