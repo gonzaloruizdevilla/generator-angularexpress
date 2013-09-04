@@ -3,7 +3,7 @@
 Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
 It generates a simple Express server in `server/main.js`
-It also add the option to use [Jade](http://jade-lang.com/) to generate html files. Jade files are generated in `app\jade`
+It also add the option to use [Jade](http://jade-lang.com/) to generate html files. Jade files are generated in `app/jade`
 
 ## Usage
 
