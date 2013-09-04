@@ -3,7 +3,11 @@
 Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
 It generates a simple Express server in `server/main.js`
+
+`grunt server` will watch files inside `server/` and will restart the Express server when a change is detected.
+
 It also add the option to use [Jade](http://jade-lang.com/) to generate html files. Jade files are generated in `app/jade`
+
 
 ## Usage
 
