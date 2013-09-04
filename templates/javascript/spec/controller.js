@@ -22,7 +22,7 @@ describe('Controller: <%= _.classify(name) %>Ctrl', function () {
 
   it('should attach a list of awesomeThings to the scope', function () {
     expect(scope.awesomeThings).toBeUndefined();
-        $httpBackend.flush();
-        expect(scope.awesomeThings.length).toBe(3);
+    $httpBackend.flush();
+    expect(scope.awesomeThings.length).toBe(3);
   });
 });
