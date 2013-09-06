@@ -2,6 +2,7 @@
 var path = require('path');
 var util = require('util');
 var yeoman = require('yeoman-generator');
+var fs = require('fs');
 
 
 module.exports = Generator;
@@ -21,9 +22,39 @@ function Generator() {
 util.inherits(Generator, yeoman.generators.NamedBase);
 
 Generator.prototype.createViewFiles = function createViewFiles() {
-  var targetPath = this.name;
-  if (this.name.indexOf('/') === -1) {
+  var data;
+  var appPath = this.env.options.appPath;
+  var fullPathJade = path.join(appPath, 'jade/index.jade');
+  if (fs.existsSync(fullPathJade)) {
+    data = createJadeViewFiles(this.name, this.env);
+  }else {
+    data = createHtmlViewFiles(this.name, this.env);
+  }
+  this.template(data.template, data.targetPath);
+
+}
+
+function createHtmlViewFiles(name, env) {
+  var targetPath = name;
+  if (name.indexOf('/') === -1) {
     targetPath = 'views/' + targetPath;
   }
-  this.template('common/view.html', path.join(this.env.options.appPath, targetPath + '.html'));
+  targetPath = path.join(env.options.appPath, targetPath + '.html');
+  return {
+    targetPath: targetPath,
+    template: 'common/view.html',
+  }
 };
+
+function createJadeViewFiles(name, env) {
+  var targetPath = name;
+  if (name.indexOf('/') === -1) {
+    targetPath = 'jade/views/' + targetPath;
+  }
+  targetPath =  path.join(env.options.appPath, targetPath + '.jade');
+  return {
+    targetPath: targetPath,
+    template: 'common/view.jade',
+  }
+};
+
