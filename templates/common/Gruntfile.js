@@ -44,7 +44,7 @@ module.exports = function (grunt) {
         tasks: ['compass:server', 'autoprefixer']
       },<% } %><% if (jade) { %>
       jade: {
-        files: ['<%%= yeoman.app %>/jade/{,*/}*.jade'],
+        files: ['<%%= yeoman.app %>/jade/**/*.jade'],
         tasks: ['jade']
       },<% } %>
       styles: {
