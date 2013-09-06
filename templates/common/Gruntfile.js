@@ -221,7 +221,7 @@ module.exports = function (grunt) {
       },
       views: {
         files: {
-          '<%%= yeoman.app %>/views/': ['<%%= yeoman.app %>/jade/views/*.jade']
+          '<%%= yeoman.app %>/views/': ['<%%= yeoman.app %>/jade/views/**/*.jade']
         },
         options: {
           basePath: '<%%= yeoman.app %>/jade/views',
