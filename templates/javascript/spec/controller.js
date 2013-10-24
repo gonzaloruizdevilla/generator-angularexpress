@@ -6,14 +6,10 @@ describe('Controller: <%= classedName %>Ctrl', function () {
   beforeEach(module('<%= scriptAppName %>'));
 
   var <%= classedName %>Ctrl,
-    scope,
-    $httpBackend;
+    scope;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function (_$httpBackend_, $controller, $rootScope) {
-    $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/api/awesomeThings')
-      .respond(['HTML5 Boilerplate', 'AngularJS', 'Karma']);
+  beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
     <%= classedName %>Ctrl = $controller('<%= classedName %>Ctrl', {
       $scope: scope
@@ -21,8 +17,6 @@ describe('Controller: <%= classedName %>Ctrl', function () {
   }));
 
   it('should attach a list of awesomeThings to the scope', function () {
-    expect(scope.awesomeThings).toBeUndefined();
-    $httpBackend.flush();
     expect(scope.awesomeThings.length).toBe(3);
   });
 });
