@@ -52,19 +52,34 @@ var Generator = module.exports = function Generator(args, options) {
     args: args
   });
 
-  this.hookFor('karma', {
-    as: 'app',
-    options: {
+  this.on('end', function () {
+    this.installDependencies({ skipInstall: this.options['skip-install'] });
+
+    var enabledComponents = [];
+
+    if (this.resourceModule) {
+      enabledComponents.push('angular-resource/angular-resource.js');
+    }
+
+    if (this.cookiesModule) {
+      enabledComponents.push('angular-cookies/angular-cookies.js');
+    }
+
+    if (this.sanitizeModule) {
+      enabledComponents.push('angular-sanitize/angular-sanitize.js');
+    }
+
+    this.invoke('karma:app', {
       options: {
         coffee: this.options.coffee,
         travis: true,
-        'skip-install': this.options['skip-install']
+        'skip-install': this.options['skip-install'],
+        components: [
+          'angular/angular.js',
+          'angular-mocks/angular-mocks.js'
+        ].concat(enabledComponents)
       }
-    }
-  });
-
-  this.on('end', function () {
-    this.installDependencies({ skipInstall: this.options['skip-install'] });
+    });
   });
 
   this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
@@ -124,10 +139,26 @@ Generator.prototype.askForModules = function askForModules() {
     this.cookiesModule = hasMod('cookiesModule');
     this.sanitizeModule = hasMod('sanitizeModule');
 
+    var angMods = [];
+
+    if (this.cookiesModule) {
+      angMods.push("'ngCookies'");
+    }
+
+    if (this.resourceModule) {
+      angMods.push("'ngResource'");
+    }
+    if (this.sanitizeModule) {
+      angMods.push("'ngSanitize'");
+    }
+
+    if (angMods.length) {
+      this.env.options.angularDeps = "\n  " + angMods.join(",\n  ") +"\n";
+    }
+
     cb();
   }.bind(this));
 };
-
 
 Generator.prototype.askForJade = function askForJade() {
   var cb = this.async();
@@ -147,22 +178,23 @@ Generator.prototype.prepareIndexFile = function prepareIndexFile() {
   this.indexFile = this.engine(this.read('../../templates/common/index.' + (this.jade ? "jade" : "html")),
       this);
 }
+
 // Waiting a more flexible solution for #138
 Generator.prototype.bootstrapFiles = function bootstrapFiles() {
   var sass = this.compassBootstrap;
   var files = [];
-  var source = 'styles/' + ( sass ? 'scss/' : 'css/' );
+  var source = 'styles/' + ( sass ? 's' : '' ) + 'css/';
 
-  if (sass) {
-    files.push('main.scss');
-    this.copy('images/glyphicons-halflings.png', 'app/images/glyphicons-halflings.png');
-    this.copy('images/glyphicons-halflings-white.png', 'app/images/glyphicons-halflings-white.png');
-  } else {
-    if (this.bootstrap) {
+  if (this.bootstrap) {
+    if (!sass) {
       files.push('bootstrap.css');
     }
-    files.push('main.css');
+
+    this.copy('images/glyphicons-halflings.png', 'app/images/glyphicons-halflings.png');
+    this.copy('images/glyphicons-halflings-white.png', 'app/images/glyphicons-halflings-white.png');
   }
+
+  files.push('main.' + (sass ? 's' : '') + 'css');
 
   files.forEach(function (file) {
     this.copy(source + file, 'app/styles/' + file);
@@ -240,7 +272,7 @@ Generator.prototype.extraModules = function extraModules() {
 
   if (modules.length) {
     if (this.jade) {
-
+      this.indexFile = appendScriptsJade(this.indexFile, 'scripts/modules.js', modules);
     } else {
       this.indexFile = this.appendScripts(this.indexFile, 'scripts/modules.js',
           modules);
