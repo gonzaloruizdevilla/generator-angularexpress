@@ -1,3 +1,12 @@
+<a name="v0.0.5"></a>
+### v0.0.5 (2013-11-07)
+
+
+#### Bug Fixes
+
+* **css:** remove merge conflicts ([d558af35](http://github.com/gonzaloruizdevilla/generator-angularexpress/commit/d558af351c8a531132ce064a461bc038e0710b25))
+* **tests:** service tests now load the correct module ([1f665444](http://github.com/gonzaloruizdevilla/generator-angularexpress/commit/1f66544476b4bec49d34e792d25ceeb32ec45b0a))
+
 <a name="v0.0.4"></a>
 ### v0.0.4 (2013-11-06)
 
