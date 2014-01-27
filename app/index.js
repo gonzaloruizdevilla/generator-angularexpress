@@ -1,9 +1,11 @@
 'use strict';
+var fs = require('fs');
 var path = require('path');
 var util = require('util');
 var angularUtils = require('../util.js');
-var spawn = require('child_process').spawn;
 var yeoman = require('yeoman-generator');
+var chalk = require('chalk');
+var wiredep = require('wiredep');
 
 
 var Generator = module.exports = function Generator(args, options) {
@@ -66,7 +68,10 @@ var Generator = module.exports = function Generator(args, options) {
   });
 
   this.on('end', function () {
-    this.installDependencies({ skipInstall: this.options['skip-install'] });
+    this.installDependencies({
+      skipInstall: this.options['skip-install'],
+      callback: this._injectDependencies.bind(this)
+    });
 
     var enabledComponents = [];
 
@@ -82,6 +87,10 @@ var Generator = module.exports = function Generator(args, options) {
       enabledComponents.push('angular-sanitize/angular-sanitize.js');
     }
 
+    if (this.routeModule) {
+      enabledComponents.push('angular-route/angular-route.js');
+    }
+
     this.invoke('karma:app', {
       options: {
         coffee: this.options.coffee,
@@ -95,12 +104,46 @@ var Generator = module.exports = function Generator(args, options) {
     });
   });
 
-  this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
+  this.pkg = require('../package.json');
 };
 
 util.inherits(Generator, yeoman.generators.Base);
 
+Generator.prototype.welcome = function welcome() {
+  // welcome message
+  if (!this.options['skip-welcome-message']) {
+    console.log(this.yeoman);
+    console.log(
+      'Out of the box I include Bootstrap and some AngularJS recommended modules.\n'
+    );
+
+    // Removed notice for minsafe
+    if (this.options.minsafe) {
+      console.warn(
+        '\n** The --minsafe flag has been removed. For more information, see ' +
+        'https://github.com/yeoman/generator-angular#minification-safe. **\n'
+      );
+    }
+  }
+};
+
+Generator.prototype.askForCompass = function askForCompass() {
+  var cb = this.async();
+
+  this.prompt([{
+    type: 'confirm',
+    name: 'compass',
+    message: 'Would you like to use Sass (with Compass)?',
+    default: true
+  }], function (props) {
+    this.compass = props.compass;
+
+    cb();
+  }.bind(this));
+};
+
 Generator.prototype.askForBootstrap = function askForBootstrap() {
+  var compass = this.compass;
   var cb = this.async();
 
   this.prompt([{
@@ -111,10 +154,10 @@ Generator.prototype.askForBootstrap = function askForBootstrap() {
   }, {
     type: 'confirm',
     name: 'compassBootstrap',
-    message: 'Would you like to use the SCSS version of Twitter Bootstrap with the Compass CSS Authoring Framework?',
+    message: 'Would you like to use the Sass version of Twitter Bootstrap?',
     default: true,
     when: function (props) {
-      return props.bootstrap;
+      return props.bootstrap && compass;
     }
   }], function (props) {
     this.bootstrap = props.bootstrap;
@@ -143,6 +186,10 @@ Generator.prototype.askForModules = function askForModules() {
       value: 'sanitizeModule',
       name: 'angular-sanitize.js',
       checked: true
+    }, {
+      value: 'routeModule',
+      name: 'angular-route.js',
+      checked: true
     }]
   }];
 
@@ -151,6 +198,7 @@ Generator.prototype.askForModules = function askForModules() {
     this.resourceModule = hasMod('resourceModule');
     this.cookiesModule = hasMod('cookiesModule');
     this.sanitizeModule = hasMod('sanitizeModule');
+    this.routeModule = hasMod('routeModule');
 
     var angMods = [];
 
@@ -163,6 +211,10 @@ Generator.prototype.askForModules = function askForModules() {
     }
     if (this.sanitizeModule) {
       angMods.push("'ngSanitize'");
+    }
+    if (this.routeModule) {
+      angMods.push("'ngRoute'");
+      this.env.options.ngRoute = true;
     }
 
     if (angMods.length) {
@@ -187,52 +239,24 @@ Generator.prototype.askForJade = function askForJade() {
   }.bind(this));
 };
 
-Generator.prototype.prepareIndexFile = function prepareIndexFile() {
-  this.indexFile = this.engine(this.read('../../templates/common/index.' + (this.jade ? "jade" : "html")),
-      this);
-}
+Generator.prototype.readIndex = function readIndex() {
+  this.ngRoute = this.env.options.ngRoute;
+  this.indexFile = this.engine(this.read('../../templates/common/index.' + (this.jade ? 'jade' : 'html')), this);
+};
 
 // Waiting a more flexible solution for #138
 Generator.prototype.bootstrapFiles = function bootstrapFiles() {
-  var sass = this.compassBootstrap;
-  var files = [];
-  var source = 'styles/' + ( sass ? 's' : '' ) + 'css/';
+  var sass = this.compass;
+  var mainFile = 'main.' + (sass ? 's' : '') + 'css';
 
   if (this.bootstrap && !sass) {
-    files.push('bootstrap.css');
     this.copy('fonts/glyphicons-halflings-regular.eot', 'app/fonts/glyphicons-halflings-regular.eot');
     this.copy('fonts/glyphicons-halflings-regular.ttf', 'app/fonts/glyphicons-halflings-regular.ttf');
     this.copy('fonts/glyphicons-halflings-regular.svg', 'app/fonts/glyphicons-halflings-regular.svg');
     this.copy('fonts/glyphicons-halflings-regular.woff', 'app/fonts/glyphicons-halflings-regular.woff');
   }
 
-  files.push('main.' + (sass ? 's' : '') + 'css');
-
-  files.forEach(function (file) {
-    this.copy(source + file, 'app/styles/' + file);
-  }.bind(this));
-
-  if (this.jade) {
-    this.indexFile = appendFilesToJade({
-      html: this.indexFile,
-      fileType: 'css',
-      optimizedPath: 'styles/main.css',
-      sourceFileList: files.map(function (file) {
-        return 'styles/' + file.replace('.scss', '.css');
-      }),
-      searchPath: '.tmp'
-    });
-  } else {
-    this.indexFile = this.appendFiles({
-      html: this.indexFile,
-      fileType: 'css',
-      optimizedPath: 'styles/main.css',
-      sourceFileList: files.map(function (file) {
-        return 'styles/' + file.replace('.scss', '.css');
-      }),
-      searchPath: '.tmp'
-    });
-  }
+  this.copy('styles/' + mainFile, 'app/styles/' + mainFile);
 };
 
 function appendScriptsJade(jade, optimizedPath, sourceFileList, attrs) {
@@ -324,8 +348,11 @@ function appendJade(jade, tag, blocks){
 }
 
 function appendFilesToJade(jadeOrOptions, fileType, optimizedPath, sourceFileList, attrs, searchPath) {
-  var blocks, updatedContent, prefix, jade, files = '';
-  jade = jadeOrOptions;
+  var blocks, updatedContent,
+      jade = jadeOrOptions,
+      files = '',
+      prefix;
+
   if (typeof jadeOrOptions === 'object') {
     jade = jadeOrOptions.html;
     fileType = jadeOrOptions.fileType;
@@ -334,6 +361,7 @@ function appendFilesToJade(jadeOrOptions, fileType, optimizedPath, sourceFileLis
     attrs = jadeOrOptions.attrs;
     searchPath = jadeOrOptions.searchPath;
   }
+
   if (fileType === 'js') {
     prefix = spacePrefix(jade, "build:body");
     sourceFileList.forEach(function (el) {
@@ -353,53 +381,72 @@ function appendFilesToJade(jadeOrOptions, fileType, optimizedPath, sourceFileLis
 }
 
 Generator.prototype.appJs = function appJs() {
+  var appendOptions = {
+    html: this.indexFile,
+    fileType: 'js',
+    optimizedPath: 'scripts/scripts.js',
+    sourceFileList: ['scripts/app.js', 'scripts/controllers/main.js'],
+    searchPath: ['.tmp', 'app']
+  };
+
   if (this.jade) {
-    this.indexFile = appendFilesToJade({
-      html: this.indexFile,
-      fileType: 'js',
-      optimizedPath: 'scripts/scripts.js',
-      sourceFileList: ['scripts/app.js'],
-      searchPath: ['.tmp', 'app']
-    });
+    this.indexFile = appendFilesToJade(appendOptions);
   } else {
-    this.indexFile = this.appendFiles({
-      html: this.indexFile,
-      fileType: 'js',
-      optimizedPath: 'scripts/scripts.js',
-      sourceFileList: ['scripts/app.js', 'scripts/controllers/main.js'],
-      searchPath: ['.tmp', 'app']
-    });
+    this.indexFile = this.appendFiles(appendOptions);
   }
 };
 
-
-
-Generator.prototype.createIndexJade = function createIndexJade() {
-  if(this.jade) {
-    this.write(path.join(this.appPath, 'jade/index.jade'), this.indexFile);
-  }
-};
-
-Generator.prototype.createIndexHtml = function createIndexHtml() {
-  if(!this.jade) {
-    this.write(path.join(this.appPath, 'index.html'), this.indexFile);
-  }
+Generator.prototype.createIndex = function createIndex() {
+  this.indexFile = this.indexFile.replace(/&apos;/g, "'");
+  var filePath = this.jade ? 'jade/index.jade' : 'index.html';
+  this.write(path.join(this.appPath, filePath), this.indexFile);
 };
 
 Generator.prototype.packageFiles = function () {
+  this.coffee = this.env.options.coffee;
   this.template('../../templates/common/_bower.json', 'bower.json');
   this.template('../../templates/common/_package.json', 'package.json');
   this.template('../../templates/common/Gruntfile.js', 'Gruntfile.js');
 };
 
-Generator.prototype.addHtmlJade = function addHtmlJade() {
-  if(this.jade) {
+Generator.prototype.imageFiles = function () {
+  this.sourceRoot(path.join(__dirname, 'templates'));
+  this.directory('images', 'app/images', true);
+};
+
+Generator.prototype.addJadeViews = function addJadeViews() {
+  if (this.jade) {
     this.copy('../../templates/common/jade/views/main.jade', 'app/jade/views/main.jade');
   }
 };
 
 Generator.prototype.addHtmlViews = function addHtmlViews() {
-  if(!this.jade) {
+  if (!this.jade) {
     this.copy('../../templates/common/views/main.html', 'app/views/main.html');
+  }
+};
+
+Generator.prototype._injectDependencies = function _injectDependencies() {
+  var howToInstall =
+    '\nAfter running `npm install & bower install`, inject your front end dependencies into' +
+    '\nyour HTML by running:' +
+    '\n' +
+    chalk.yellow.bold('\n  grunt bower-install');
+
+  var wireDepConfig = {
+    directory: 'app/bower_components',
+    bowerJson: require('./bower.json'),
+    ignorePath: 'app/',
+    src: ['app/index.*']
+  };
+
+  if (this.compass && this.bootstrap) {
+    wireDepConfig.exclude = ['sass-bootstrap'];
+  }
+
+  if (this.options['skip-install']) {
+    console.log(howToInstall);
+  } else {
+    wiredep(wireDepConfig);
   }
 };

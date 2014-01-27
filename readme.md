@@ -192,7 +192,7 @@ angular.module('myMod')
 
 A project can mix CoffeScript and JavaScript files.
 
-To output JavaScript files, even if CoffeeScript files exist (the default is to output CoffeeScript files if 
+To output JavaScript files, even if CoffeeScript files exist (the default is to output CoffeeScript files if
 the generator finds any in the project), use `--coffee=false`.
 
 ### Minification Safe
