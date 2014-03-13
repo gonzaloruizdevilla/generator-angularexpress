@@ -34,19 +34,19 @@
     "yeoman-generator": "~0.16.0"
   },
   "peerDependencies": {
-    "generator-karma": ">=0.6.0",
+    "generator-karma": ">=0.7.0",
     "yo": ">=1.0.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.8.0",
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.9.2",
     "grunt-conventional-changelog": "~1.0.0",
     "grunt-release": "~0.6.0",
     "load-grunt-tasks": "~0.3.0",
-    "marked": "~0.2.8",
+    "marked": "~0.3.2",
     "mocha": "*",
     "semver": "~2.2.1",
-    "underscore.string": "~2.3.1"
+    "underscore.string": "~2.3.3"
   },
   "engines": {
     "node": ">=0.10.0",
