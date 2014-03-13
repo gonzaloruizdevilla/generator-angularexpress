@@ -192,8 +192,9 @@ module.exports = function (grunt) {
 
     // Automatically inject Bower components into the app
     bowerInstall: {
-      app: {
-        src: ['<%%= yeoman.app %>/index.html'],
+      app: {<% if (jade) { %>
+        src: ['<%%= yeoman.app %>/jade/index.jade'],<% } else { %>
+        src: ['<%%= yeoman.app %>/index.html'],<% } %>
         ignorePath: '<%%= yeoman.app %>/'
       }<% if (compass) { %>,
       sass: {
@@ -261,15 +262,14 @@ module.exports = function (grunt) {
       options: {
         pretty: true
       },
-      index: {
-        files: {
-          '<%%= yeoman.app %>/': ['<%%= yeoman.app %>/jade/index.jade']
-        }
-      },
       views: {
-        files: {
-          '<%%= yeoman.app %>/views/': ['<%%= yeoman.app %>/jade/views/**/*.jade']
-        }
+        files: [{
+          expand: true,
+          cwd: '<%%= yeoman.app %>/jade',
+          src: '**/*.jade',
+          ext: '.html',
+          dest: '<%%= yeoman.app %>'
+        }]
       }
     },<% } %>
 
@@ -464,7 +464,8 @@ module.exports = function (grunt) {
     // concat: {
     //   dist: {}
     // },
-    //
+
+    // Test settings
     karma: {
       unit: {
         configFile: 'karma.conf.js',
@@ -482,6 +483,8 @@ module.exports = function (grunt) {
       'clean:server',
       'bowerInstall',
       'concurrent:server',
+      'configureProxies',
+      'express',
       'autoprefixer',
       'connect:livereload',
       'watch'
