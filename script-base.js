@@ -124,7 +124,7 @@ Generator.prototype.addScriptToIndexHtml = function (script) {
       file: fullPath,
       needle: '<!-- endbuild -->',
       splicable: [
-        '<script src="scripts/' + script + '.js"></script>'
+        '<script src="scripts/' + script.toLowerCase().replace(/\\/g, '/') + '.js"></script>'
       ]
     });
   } catch (e) {
