@@ -263,36 +263,6 @@ function appendScriptsJade(jade, optimizedPath, sourceFileList, attrs) {
   return appendFilesToJade(jade, 'js', optimizedPath, sourceFileList, attrs);
 };
 
-Generator.prototype.bootstrapJs = function bootstrapJs() {
-  var list;
-  if (!this.bootstrap) {
-    return;  // Skip if disabled.
-  }
-
-
-  list = [
-    'bower_components/sass-bootstrap/js/affix.js',
-    'bower_components/sass-bootstrap/js/alert.js',
-    'bower_components/sass-bootstrap/js/button.js',
-    'bower_components/sass-bootstrap/js/carousel.js',
-    'bower_components/sass-bootstrap/js/collapse.js',
-    'bower_components/sass-bootstrap/js/dropdown.js',
-    'bower_components/sass-bootstrap/js/modal.js',
-    'bower_components/sass-bootstrap/js/popover.js',
-    'bower_components/sass-bootstrap/js/scrollspy.js',
-    'bower_components/sass-bootstrap/js/tab.js',
-    'bower_components/sass-bootstrap/js/tooltip.js',
-    'bower_components/sass-bootstrap/js/transition.js'
-  ];
-  // Wire Twitter Bootstrap plugins
-  if (this.jade) {
-    this.indexFile = appendScriptsJade(this.indexFile, 'scripts/plugins.js', list);
-  } else {
-    this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', list);
-  }
-
-};
-
 Generator.prototype.extraModules = function extraModules() {
   var modules = [];
   if (this.resourceModule) {
