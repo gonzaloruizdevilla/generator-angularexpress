@@ -135,7 +135,6 @@ module.exports = function (grunt) {
       },
       dist: {
         options: {
-          options: {
           middleware: middleware,
           base: '<%%= yeoman.dist %>'
         }
@@ -201,7 +200,7 @@ module.exports = function (grunt) {
         src: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         ignorePath: '<%%= yeoman.app %>/bower_components/'
       }<% } %>
-    },,<% if (coffee) { %>
+    },<% if (coffee) { %>
 
     // Compiles CoffeeScript to JavaScript
     coffee: {
@@ -471,7 +470,7 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
-    },
+    }
   });
 
   grunt.registerTask('serve', function (target) {
