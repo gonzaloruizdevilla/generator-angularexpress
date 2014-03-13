@@ -5,10 +5,13 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
+
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
@@ -23,11 +26,10 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <% if (ngRoute) {
-      %><div class="container" ng-view></div><%
-    } else {
-      %><div class="container" ng-include="'views/main.html'" ng-controller="MainCtrl"></div><%
-    } %>
+    <% if (ngRoute) { %>
+    <div class="container" ng-view></div><%
+    } else { %>
+    <div class="container" ng-include="'views/main.html'" ng-controller="MainCtrl"></div><% } %>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
