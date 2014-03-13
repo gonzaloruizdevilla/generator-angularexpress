@@ -91,15 +91,17 @@ var Generator = module.exports = function Generator(args, options) {
       enabledComponents.push('angular-route/angular-route.js');
     }
 
+    var components = [
+          'angular/angular.js',
+          'angular-mocks/angular-mocks.js'
+        ].concat(enabledComponents);
+
     this.invoke('karma:app', {
       options: {
         coffee: this.options.coffee,
         travis: true,
         'skip-install': this.options['skip-install'],
-        components: [
-          'angular/angular.js',
-          'angular-mocks/angular-mocks.js'
-        ].concat(enabledComponents)
+        components: components
       }
     });
   });
@@ -263,41 +265,9 @@ function appendScriptsJade(jade, optimizedPath, sourceFileList, attrs) {
   return appendFilesToJade(jade, 'js', optimizedPath, sourceFileList, attrs);
 };
 
-Generator.prototype.extraModules = function extraModules() {
-  var modules = [];
-  if (this.resourceModule) {
-    modules.push('bower_components/angular-resource/angular-resource.js');
-  }
-
-  if (this.cookiesModule) {
-    modules.push('bower_components/angular-cookies/angular-cookies.js');
-  }
-
-  if (this.sanitizeModule) {
-    modules.push('bower_components/angular-sanitize/angular-sanitize.js');
-  }
-
-  if (modules.length) {
-    if (this.jade) {
-      this.indexFile = appendScriptsJade(this.indexFile, 'scripts/modules.js', modules);
-    } else {
-      this.indexFile = this.appendScripts(this.indexFile, 'scripts/modules.js',
-          modules);
-    }
-  }
-};
-
-function spacePrefix(jade, block){
-  var prefix;
-  jade.split("\n").forEach( function (line) { if( line.indexOf(block)> -1 ) {
-    prefix = line.split("/")[0];
-  }});
-  return prefix;
-}
-
 function generateJadeBlock(blockType, optimizedPath, filesBlock, searchPath, prefix) {
-  var blockStart, blockEnd;
   var blockSearchPath = '';
+  var blockStart, blockEnd;
 
   if (searchPath !== undefined) {
     if (util.isArray(searchPath)) {
@@ -306,8 +276,8 @@ function generateJadeBlock(blockType, optimizedPath, filesBlock, searchPath, pre
     blockSearchPath = '(' + searchPath +  ')';
   }
 
-  blockStart = '\n' + prefix + '// build:' + blockType + blockSearchPath + ' ' + optimizedPath + ' \n';
-  blockEnd = prefix + '// endbuild\n' + prefix;
+  blockStart = '\n    // build:' + blockType + blockSearchPath + ' ' + optimizedPath + ' \n';
+  blockEnd = '    // endbuild\n';
   return blockStart + filesBlock + blockEnd;
 };
 
@@ -318,10 +288,9 @@ function appendJade(jade, tag, blocks){
 }
 
 function appendFilesToJade(jadeOrOptions, fileType, optimizedPath, sourceFileList, attrs, searchPath) {
-  var blocks, updatedContent,
-      jade = jadeOrOptions,
-      files = '',
-      prefix;
+  var jade = jadeOrOptions;
+  var files = '';
+  var blocks, updatedContent, prefix;
 
   if (typeof jadeOrOptions === 'object') {
     jade = jadeOrOptions.html;
@@ -332,22 +301,27 @@ function appendFilesToJade(jadeOrOptions, fileType, optimizedPath, sourceFileLis
     searchPath = jadeOrOptions.searchPath;
   }
 
+  attrs = Generator.prototype.attributes(attrs);
+  if (attrs.length) {
+    attrs = attrs + ' ';
+  }
+
   if (fileType === 'js') {
-    prefix = spacePrefix(jade, "build:body");
     sourceFileList.forEach(function (el) {
-      files += prefix + 'script(' + (attrs||'') + 'src="' + el + '")\n';
+      files += '    script(' + attrs + 'src="' + el + '")\n';
     });
-    blocks = generateJadeBlock('js', optimizedPath, files, searchPath, prefix);
+    blocks = generateJadeBlock('js', optimizedPath, files, searchPath);
     updatedContent = appendJade(jade, 'body', blocks);
   } else if (fileType === 'css') {
-    prefix = spacePrefix(jade, "build:head");
     sourceFileList.forEach(function (el) {
-      files += prefix + 'link(' + (attrs||'') + 'rel="stylesheet", href="' + el  + '")\n';
+      files += '    link(' + attrs + 'rel="stylesheet" href="' + el  + '")\n';
     });
-    blocks = generateJadeBlock('css', optimizedPath, files, searchPath, prefix);
+    blocks = generateJadeBlock('css', optimizedPath, files, searchPath);
     updatedContent = appendJade(jade, 'head', blocks);
   }
-  return updatedContent;
+
+  // cleanup trailing whitespace
+  return updatedContent.replace(/[\t ]+$/gm, '').replace(/\n$/, '');
 }
 
 Generator.prototype.appJs = function appJs() {
@@ -384,18 +358,6 @@ Generator.prototype.imageFiles = function () {
   this.directory('images', 'app/images', true);
 };
 
-Generator.prototype.addJadeViews = function addJadeViews() {
-  if (this.jade) {
-    this.copy('../../templates/common/jade/views/main.jade', 'app/jade/views/main.jade');
-  }
-};
-
-Generator.prototype.addHtmlViews = function addHtmlViews() {
-  if (!this.jade) {
-    this.copy('../../templates/common/views/main.html', 'app/views/main.html');
-  }
-};
-
 Generator.prototype._injectDependencies = function _injectDependencies() {
   var howToInstall =
     '\nAfter running `npm install & bower install`, inject your front end dependencies into' +
@@ -403,20 +365,14 @@ Generator.prototype._injectDependencies = function _injectDependencies() {
     '\n' +
     chalk.yellow.bold('\n  grunt bower-install');
 
-  var wireDepConfig = {
-    directory: 'app/bower_components',
-    bowerJson: require('./bower.json'),
-    ignorePath: 'app/',
-    src: ['app/index.*']
-  };
-
-  if (this.compass && this.bootstrap) {
-    wireDepConfig.exclude = ['sass-bootstrap'];
-  }
-
   if (this.options['skip-install']) {
     console.log(howToInstall);
   } else {
-    wiredep(wireDepConfig);
+    wiredep({
+      directory: 'app/bower_components',
+      bowerJson: JSON.parse(fs.readFileSync('./bower.json')),
+      ignorePath: 'app/',
+      src: 'app/' + (this.jade ? 'jade/index.jade': 'index.html')
+    });
   }
 };
