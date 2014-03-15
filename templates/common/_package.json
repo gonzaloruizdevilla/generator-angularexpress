@@ -32,6 +32,8 @@
     "grunt-express": "~1.2.1",
     "grunt-connect-proxy": "~0.1.8",
     "express": "~3.4.8",
+    "karma": "~0.12.0",
+    "grunt-karma": "~0.8.2",
     "karma-jasmine": "~0.2.2",
     "karma-chrome-launcher": "~0.1.2",
     "karma-firefox-launcher": "~0.1.3",

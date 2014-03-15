@@ -78,8 +78,8 @@ module.exports = function (grunt) {
         tasks: ['newer:copy:styles', 'autoprefixer']
       },<% } %><% if (jade) { %>
       jade: {
-        files: ['<%%= yeoman.app %>/jade/**/*.jade'],
-        tasks: ['jade']
+        files: ['<%%= yeoman.app %>/{,*/}/*.jade'],
+        tasks: ['newer:jade']
       },<% } %>
       gruntfile: {
         files: ['Gruntfile.js']
@@ -89,6 +89,7 @@ module.exports = function (grunt) {
           livereload: '<%%= connect.options.livereload %>'
         },
         files: [
+          '.tmp/styles/{,*/}*.css',
           '<%%= yeoman.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',<% if (coffee) { %>
           '.tmp/scripts/{,*/}*.js',<% } %>
@@ -192,9 +193,8 @@ module.exports = function (grunt) {
 
     // Automatically inject Bower components into the app
     bowerInstall: {
-      app: {<% if (jade) { %>
-        src: ['<%%= yeoman.app %>/jade/index.jade'],<% } else { %>
-        src: ['<%%= yeoman.app %>/index.html'],<% } %>
+      app: {
+        src: ['<%%= yeoman.app %>/index.html'],
         ignorePath: '<%%= yeoman.app %>/'
       }<% if (compass) { %>,
       sass: {
@@ -262,13 +262,13 @@ module.exports = function (grunt) {
       options: {
         pretty: true
       },
-      views: {
+      dist: {
         files: [{
           expand: true,
           cwd: '<%%= yeoman.app %>/jade',
-          src: '**/*.jade',
-          ext: '.html',
-          dest: '<%%= yeoman.app %>'
+          src: ['*.jade', 'views/{,*/}*.jade'],
+          dest: '<%%= yeoman.app %>',
+          ext: '.html'
         }]
       }
     },<% } %>
@@ -393,6 +393,8 @@ module.exports = function (grunt) {
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
+            '*.html',
+            'views/{,*/}*.html',
             'bower_components/**/*',
             'images/{,*/}*.{gif,webp}',
             'fonts/*'
@@ -434,8 +436,7 @@ module.exports = function (grunt) {
         'compass:dist',<% } else { %>
         'copy:styles',<% } %>
         'imagemin',
-        'svgmin',
-        'htmlmin'
+        'svgmin'
       ]
     },
 
@@ -481,8 +482,8 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'bowerInstall',
       'concurrent:server',
+      'bowerInstall',
       'configureProxies',
       'express',
       'autoprefixer',
@@ -506,9 +507,9 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'concurrent:dist',
     'bowerInstall',
     'useminPrepare',
-    'concurrent:dist',
     'autoprefixer',
     'concat',
     'ngmin',

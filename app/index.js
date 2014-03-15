@@ -281,10 +281,10 @@ function generateJadeBlock(blockType, optimizedPath, filesBlock, searchPath, pre
   return blockStart + filesBlock + blockEnd;
 };
 
-function appendJade(jade, tag, blocks){
-  var mark = "//- build:" + tag,
+function appendJade(jade, tagName, content) {
+  var mark = "//- build:" + tagName,
       position = jade.indexOf(mark);
-  return [jade.slice(0, position), blocks, jade.slice(position)].join('');
+  return [jade.slice(0, position), content, jade.slice(position)].join('');
 }
 
 function appendFilesToJade(jadeOrOptions, fileType, optimizedPath, sourceFileList, attrs, searchPath) {
@@ -356,6 +356,18 @@ Generator.prototype.packageFiles = function () {
 Generator.prototype.imageFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
   this.directory('images', 'app/images', true);
+};
+
+Generator.prototype.addJadeViews = function addJadeViews() {
+  if (this.jade) {
+    this.copy('../../templates/common/jade/views/main.jade', 'app/jade/views/main.jade');
+  }
+};
+
+Generator.prototype.addHtmlViews = function addHtmlViews() {
+  if (!this.jade) {
+    this.copy('../../templates/common/views/main.html', 'app/views/main.html');
+  }
 };
 
 Generator.prototype._injectDependencies = function _injectDependencies() {
