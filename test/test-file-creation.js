@@ -33,8 +33,9 @@ describe('Angular generator', function () {
 
   it('should generate dotfiles', function (done) {
     helpers.mockPrompt(angular, {
+      compass: true,
       bootstrap: true,
-      compassBoostrap: true,
+      compassBootstrap: true,
       modules: []
     });
 
@@ -49,7 +50,7 @@ describe('Angular generator', function () {
                     'app/404.html',
                     'app/favicon.ico',
                     'app/robots.txt',
-                    'app/styles/main.css',
+                    'app/styles/main.scss',
                     'app/views/main.html',
                     ['.bowerrc', /"directory": "app\/bower_components"/],
                     'Gruntfile.js',
@@ -61,8 +62,9 @@ describe('Angular generator', function () {
                     'test/spec/controllers/main.js'
                     ];
     helpers.mockPrompt(angular, {
+      compass: true,
       bootstrap: true,
-      compassBoostrap: true,
+      compassBootstrap: true,
       modules: []
     });
 
@@ -77,7 +79,7 @@ describe('Angular generator', function () {
                     'app/404.html',
                     'app/favicon.ico',
                     'app/robots.txt',
-                    'app/styles/main.css',
+                    'app/styles/main.scss',
                     'app/views/main.html',
                     ['.bowerrc', /"directory": "app\/bower_components"/],
                     'Gruntfile.js',
@@ -89,8 +91,9 @@ describe('Angular generator', function () {
                     'test/spec/controllers/main.coffee'
                     ];
     helpers.mockPrompt(angular, {
+      compass: true,
       bootstrap: true,
-      compassBoostrap: true,
+      compassBootstrap: true,
       modules: []
     });
 
@@ -106,7 +109,7 @@ describe('Angular generator', function () {
                       'app/404.html',
                       'app/favicon.ico',
                       'app/robots.txt',
-                      'app/styles/main.css',
+                      'app/styles/main.scss',
                       'app/jade/views/main.jade',
                       ['.bowerrc', /"directory": "app\/bower_components"/],
                       'Gruntfile.js',
@@ -118,9 +121,10 @@ describe('Angular generator', function () {
                       'test/spec/controllers/main.js'
                       ];
       helpers.mockPrompt(angular, {
+        jade: true,
+        compass: true,
         bootstrap: true,
-        compassBoostrap: true,
-        jade:true,
+        compassBootstrap: true,
         modules: []
       });
 
@@ -161,8 +165,9 @@ describe('Angular generator', function () {
     angularGenerator = helpers.createGenerator('angularexpress:' + generatorType, deps, [name]);
 
     helpers.mockPrompt(angular, {
+      compass: true,
       bootstrap: true,
-      compassBoostrap: true,
+      compassBootstrap: true,
       modules: []
     });
     angular.run([], function (){
@@ -225,15 +230,17 @@ describe('Angular generator', function () {
       var angularView;
       var deps = ['../../view'];
       angularView = helpers.createGenerator('angularexpress:view', deps, ['foo']);
+
       helpers.mockPrompt(angular, {
+        compass: true,
         bootstrap: true,
-        compassBoostrap: true,
+        compassBootstrap: true,
         modules: []
       });
-      angular.run([], function (){
+      angular.run({}, function (){
         angularView.run([], function () {
           helpers.assertFiles([
-            ['app/views/foo.html']
+            ['app/views/foo.html', /view/]
           ]);
           done();
         });
@@ -246,14 +253,15 @@ describe('Angular generator', function () {
       angularView = helpers.createGenerator('angularexpress:view', deps, ['foo/bar']);
 
       helpers.mockPrompt(angular, {
+        compass: true,
         bootstrap: true,
-        compassBoostrap: true,
+        compassBootstrap: true,
         modules: []
       });
       angular.run([], function (){
         angularView.run([], function () {
           helpers.assertFiles([
-            ['app/views/foo/bar.html']
+            ['app/views/foo/bar.html', /view/]
           ]);
           done();
         });

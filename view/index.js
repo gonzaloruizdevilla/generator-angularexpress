@@ -24,24 +24,23 @@ Generator.prototype.createViewFiles = function createViewFiles() {
   var appPath = this.env.options.appPath;
   var fullPathJade = path.join(appPath, 'jade/index.jade');
   if (fs.existsSync(fullPathJade)) {
-    data = createJadeViewFiles(this.name, this.env);
+    data = this.createJadeViewFiles();
   }else {
-    data = createHtmlViewFiles(this.name, this.env);
+    data = this.createHtmlViewFiles();
   }
   this.template(data.template, data.targetPath);
+};
 
-}
-
-function createHtmlViewFiles(name, env) {
-  var targetPath = path.join(env.options.appPath, 'views', name + '.html');
+Generator.prototype.createHtmlViewFiles = function createHtmlViewFiles () {
+  var targetPath = path.join(this.env.options.appPath, 'views', this.name.toLowerCase() + '.html');
   return {
     targetPath: targetPath,
     template: 'common/view.html'
   }
 };
 
-function createJadeViewFiles(name, env) {
-  var targetPath = path.join(env.options.appPath, 'jade/views', name + '.jade');
+Generator.prototype.createJadeViewFiles = function createJadeViewFiles () {
+  var targetPath = path.join(this.env.options.appPath, 'jade/views', this.name.toLowerCase() + '.jade');
   return {
     targetPath: targetPath,
     template: 'common/view.jade'
