@@ -1,6 +1,6 @@
 'use strict';
-var util = require('util');
 var fs = require('fs');
+var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var angularUtils = require('./util.js');
@@ -72,21 +72,21 @@ util.inherits(Generator, yeoman.generators.NamedBase);
 Generator.prototype.appTemplate = function (src, dest) {
   yeoman.generators.Base.prototype.template.apply(this, [
     src + this.scriptSuffix,
-    path.join(this.env.options.appPath, dest) + this.scriptSuffix
+    path.join(this.env.options.appPath, dest.toLowerCase()) + this.scriptSuffix
   ]);
 };
 
 Generator.prototype.testTemplate = function (src, dest) {
   yeoman.generators.Base.prototype.template.apply(this, [
     src + this.scriptSuffix,
-    path.join(this.env.options.testPath, dest) + this.scriptSuffix
+    path.join(this.env.options.testPath, dest.toLowerCase()) + this.scriptSuffix
   ]);
 };
 
 Generator.prototype.htmlTemplate = function (src, dest) {
   yeoman.generators.Base.prototype.template.apply(this, [
     src,
-    path.join(this.env.options.appPath, dest)
+    path.join(this.env.options.appPath, dest.toLowerCase())
   ]);
 };
 
@@ -100,39 +100,34 @@ Generator.prototype.addScriptToIndex = function (script) {
   }
 };
 
-Generator.prototype.addScriptToIndexJade = function (script) {
+Generator.prototype.addScript = function (filePath, needle, script, tag) {
   try {
     var appPath = this.env.options.appPath;
-    var fullPath = path.join(appPath, 'jade/index.jade');
+    var fullPath = path.join(appPath, filePath);
     angularUtils.rewriteFile({
       file: fullPath,
-      needle: '// endbuild',
-      splicable: [
-        'script(src="scripts/' + script + '.js")'
-      ]
+      needle: needle,
+      splicable: [tag.replace(/\{\{src\}\}/, "scripts/" + script.toLowerCase().replace(/\\/g, '/') + ".js")]
     });
   } catch (e) {
     console.log('\nUnable to find '.yellow + fullPath + '. Reference to '.yellow + script + '.js ' + 'not added.\n'.yellow);
   }
+}
+
+Generator.prototype.addScriptToIndexJade = function (script) {
+  this.addScript('jade/index.jade', '// endbuild', script, 'script(src="{{src}}")');
 };
 
 Generator.prototype.addScriptToIndexHtml = function (script) {
-  try {
-    var appPath = this.env.options.appPath;
-    var fullPath = path.join(appPath, 'index.html');
-    angularUtils.rewriteFile({
-      file: fullPath,
-      needle: '<!-- endbuild -->',
-      splicable: [
-        '<script src="scripts/' + script + '.js"></script>'
-      ]
-    });
-  } catch (e) {
-    console.log('\nUnable to find '.yellow + fullPath + '. Reference to '.yellow + script + '.js ' + 'not added.\n'.yellow);
-  }
+  this.addScript('index.html', '<!-- endbuild -->', script, '<script src="{{src}}"></script>');
 };
 
 Generator.prototype.generateSourceAndTest = function (appTemplate, testTemplate, targetDirectory, skipAdd) {
+  // Services use classified names
+  if (this.generatorName.toLowerCase() === 'service') {
+    this.cameledName = this.classedName;
+  }
+
   this.appTemplate(appTemplate, path.join('scripts', targetDirectory, this.name));
   this.testTemplate(testTemplate, path.join(targetDirectory, this.name));
   if (!skipAdd) {

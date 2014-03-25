@@ -2,17 +2,38 @@
   "name": "<%= _.slugify(_.humanize(appname)) %>",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "~1.0.8",
-    "json3": "~3.2.5",<% if (bootstrap) { %>
-    "jquery": "~1.10.2",
-    "bootstrap-sass": "~2.3.1",
-    <% } %>"es5-shim": "~2.0.8"<% if (resourceModule) { %>,
-    "angular-resource": "~1.0.8"<% } %><% if (cookiesModule) { %>,
-    "angular-cookies": "~1.0.8"<% } %><% if (sanitizeModule) { %>,
-    "angular-sanitize": "~1.0.8"<% } %>
+    "angular": "1.2.14",
+    "json3": "~3.2.6",
+    "es5-shim": "~2.1.0"<% if (bootstrap) { %>,
+    "jquery": "~1.11.0"<% if (compassBootstrap) { %>,
+    "bootstrap-sass-official": "~3.1.0"<% } else { %>,
+    "bootstrap": "~3.0.3"<% } } %><% if (resourceModule) { %>,
+    "angular-resource": "1.2.14"<% } %><% if (cookiesModule) { %>,
+    "angular-cookies": "1.2.14"<% } %><% if (sanitizeModule) { %>,
+    "angular-sanitize": "1.2.14"<% } %><% if (routeModule) { %>,
+    "angular-route": "1.2.14"<% } %>
   },
   "devDependencies": {
-    "angular-mocks": "~1.0.8",
-    "angular-scenario": "~1.0.8"
+    "angular-mocks": "1.2.14",
+    "angular-scenario": "1.2.14"
+  },
+  "overrides": {
+    "bootstrap-sass-official": {
+      "main": [
+        "vendor/assets/stylesheets/bootstrap.scss",
+        "vendor/assets/javascripts/bootstrap/affix.js",
+        "vendor/assets/javascripts/bootstrap/alert.js",
+        "vendor/assets/javascripts/bootstrap/button.js",
+        "vendor/assets/javascripts/bootstrap/carousel.js",
+        "vendor/assets/javascripts/bootstrap/collapse.js",
+        "vendor/assets/javascripts/bootstrap/dropdown.js",
+        "vendor/assets/javascripts/bootstrap/tab.js",
+        "vendor/assets/javascripts/bootstrap/transition.js",
+        "vendor/assets/javascripts/bootstrap/scrollspy.js",
+        "vendor/assets/javascripts/bootstrap/modal.js",
+        "vendor/assets/javascripts/bootstrap/tooltip.js",
+        "vendor/assets/javascripts/bootstrap/popover.js"
+      ]
+    }
   }
 }

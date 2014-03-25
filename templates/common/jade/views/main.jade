@@ -1,8 +1,35 @@
-.hero-unit
+.header
+  ul.nav.nav-pills.pull-right
+    li.active
+      a(ng-href='#') Home
+    li
+      a(ng-href='#') About
+    li
+      a(ng-href='#') Contact
+  h3.text-muted <%= appname %>
+
+.jumbotron
   h1 'Allo, 'Allo!
-  p You now have
-  ul
-      li Jade
-      li(ng-repeat="thing in awesomeThings") {{thing}}
-  p installed.
-  h3 Enjoy coding! - Yeoman
+  p.lead
+    img(src='images/yeoman.png', alt='I\'m Yeoman')
+    br
+    | Always a pleasure scaffolding your apps.
+  p
+    a.btn.btn-lg.btn-success(ng-href='#')
+      | Splendid! &nbsp;
+      span.glyphicon.glyphicon-ok
+
+.row.marketing
+  h4 HTML5 Boilerplate
+  p HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
+
+  h4 Angular
+  p AngularJS is a toolset for building the framework most suited to your application development.
+
+  h4 Karma
+  p Spectacular Test Runner for JavaScript.
+
+.footer
+  p
+    span.glyphicon.glyphicon-heart
+    | &nbsp; from the Yeoman team

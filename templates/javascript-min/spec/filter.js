@@ -7,7 +7,7 @@ describe('Filter: <%= cameledName %>', function () {
 
   // initialize a new instance of the filter before each test
   var <%= cameledName %>;
-  beforeEach(inject(function($filter) {
+  beforeEach(inject(function ($filter) {
     <%= cameledName %> = $filter('<%= cameledName %>');
   }));
 

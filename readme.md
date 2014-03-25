@@ -1,13 +1,10 @@
-# AngularJS with an Express server generator [![Build Status](https://api.travis-ci.org/gonzaloruizdevilla/generator-angularexpress.png?branch=master)](http://travis-ci.org/gonzaloruizdevilla/generator-angularexpress)  [![Dependency Status](https://gemnasium.com/gonzaloruizdevilla/generator-angularexpress.png)](https://gemnasium.com/gonzaloruizdevilla/generator-angularexpress)
+# AngularJS with an Express server generator [![Build Status](https://api.travis-ci.org/gonzaloruizdevilla/generator-angularexpress.png?branch=master)](http://travis-ci.org/gonzaloruizdevilla/generator-angularexpress) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
-It generates a simple Express server in `server/main.js`
+> Yeoman generator for AngularJS and Express - It generates a simple Express server in `server/main.js`
 
-`grunt server` will watch files inside `server/` and will restart the Express server when a change is detected.
-
-It also add the option to use [Jade](http://jade-lang.com/) to generate html files. Jade files are generated in `app/jade`
-
+It also has the option to use [Jade](http://jade-lang.com/) to generate html files. Jade files are generated in `app/jade`
 
 ## Usage
 
@@ -25,6 +22,8 @@ Run `yo angularexpress`, optionally passing an app name:
 ```
 yo angularexpress [app-name]
 ```
+
+Run `grunt` for building and `grunt serve` for preview
 
 ## Generators
 
@@ -192,7 +191,7 @@ angular.module('myMod')
 
 A project can mix CoffeScript and JavaScript files.
 
-To output JavaScript files, even if CoffeeScript files exist (the default is to output CoffeeScript files if 
+To output JavaScript files, even if CoffeeScript files exist (the default is to output CoffeeScript files if
 the generator finds any in the project), use `--coffee=false`.
 
 ### Minification Safe
