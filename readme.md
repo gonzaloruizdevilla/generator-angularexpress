@@ -1,4 +1,4 @@
-# AngularJS with an Express server generator [![Build Status](https://api.travis-ci.org/gonzaloruizdevilla/generator-angularexpress.png?branch=master)](http://travis-ci.org/gonzaloruizdevilla/generator-angularexpress)  [![Dependency Status](https://gemnasium.com/gonzaloruizdevilla/generator-angularexpress.png)](https://gemnasium.com/gonzaloruizdevilla/generator-angularexpress) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+# AngularJS with an Express server generator [![Build Status](https://api.travis-ci.org/gonzaloruizdevilla/generator-angularexpress.png?branch=master)](http://travis-ci.org/gonzaloruizdevilla/generator-angularexpress) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
