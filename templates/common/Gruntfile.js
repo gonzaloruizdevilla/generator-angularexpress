@@ -1,12 +1,14 @@
 // Generated on <%= (new Date).toISOString().split('T')[0] %> using <%= pkg.name %> <%= pkg.version %>
 'use strict';
 
+var path = require('path');
+var LIVERELOAD_PORT = 35729;
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 var middleware = function (connect, options) {
   var middlewares = [proxySnippet];
   options.base.forEach(function(base) {
     // Serve static files.
-    middlewares.push(connect.static(base));
+    middlewares.push(connect.static(path.resolve(base)));
   });
   return middlewares;
 };
@@ -33,15 +35,6 @@ module.exports = function (grunt) {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
       dist: 'dist'
-    },
-
-    express: {
-      custom: {
-        options: {
-          port: 9002,
-          server: require('path').resolve('./server/main')
-        }
-      }
     },
 
     // Watches files for changes and runs tasks based on the changed files
@@ -98,13 +91,22 @@ module.exports = function (grunt) {
       }
     },
 
+    express: {
+      options: {
+        hostname: 'localhost',
+      },
+      custom: {
+        options: {
+          port: 9002,
+          server: path.resolve('./server/main')
+        }
+      }
+    },
+
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        livereload: 35729
       },
       proxies: [
         {
@@ -115,6 +117,8 @@ module.exports = function (grunt) {
       ],
       livereload: {
         options: {
+          port: 9000,
+          livereload: LIVERELOAD_PORT,
           middleware: middleware,
           open: true,
           base: [
@@ -145,14 +149,22 @@ module.exports = function (grunt) {
 
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
+      server: {
+        options: {
+          jshintrc: 'server/.jshintrc'
+        },
+        src: ['server/{,*/}*.js']
       },
-      all: [
-        'Gruntfile.js'<% if (!coffee) { %>,
-        '<%%= yeoman.app %>/scripts/{,*/}*.js'<% } %>
-      ]<% if (!coffee) { %>,
+      all: {
+        options: {
+          jshintrc: '.jshintrc',
+          reporter: require('jshint-stylish')
+        },
+        src: [
+          'Gruntfile.js'<% if (!coffee) { %>,
+          '<%%= yeoman.app %>/scripts/{,*/}*.js'<% } %>
+        ]
+      },<% if (!coffee) { %>
       test: {
         options: {
           jshintrc: 'test/.jshintrc'
