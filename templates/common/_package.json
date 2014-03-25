@@ -1,7 +1,9 @@
 {
   "name": "<%= _.slugify(appname) %>",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "express": "~3.5.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.4",
     "grunt-autoprefixer": "~0.7.2",
@@ -29,15 +31,16 @@
     "jshint-stylish": "~0.1.5",
     "load-grunt-tasks": "~0.4.0",
     "time-grunt": "~0.2.10",
-    "grunt-express": "~1.2.1",
-    "grunt-connect-proxy": "~0.1.8",
-    "express": "~3.4.8",
+    "grunt-express": "~0.3.3",
+    "grunt-connect-proxy": "~0.1.10",
     "karma": "~0.12.0",
     "grunt-karma": "~0.8.2",
     "karma-jasmine": "~0.2.2",
     "karma-chrome-launcher": "~0.1.2",
     "karma-firefox-launcher": "~0.1.3",
-    "karma-phantomjs-launcher": "~0.1.2"
+    "karma-phantomjs-launcher": "~0.1.2",
+    "karma-ng-scenario": "~0.1.0",
+    "karma-ng-html2js-preprocessor": "~0.1.0"
   },
   "engines": {
     "node": ">=0.10.0"
