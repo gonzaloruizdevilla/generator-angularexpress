@@ -71,7 +71,7 @@ module.exports = function (grunt) {
         tasks: ['newer:copy:styles', 'autoprefixer']
       },<% } %><% if (jade) { %>
       jade: {
-        files: ['<%%= yeoman.app %>/{,*/}/*.jade'],
+        files: ['<%%= yeoman.app %>/jade/{,*/}/*.jade'],
         tasks: ['newer:jade']
       },<% } %>
       gruntfile: {
@@ -79,12 +79,11 @@ module.exports = function (grunt) {
       },
       livereload: {
         options: {
-          livereload: '<%%= connect.options.livereload %>'
+          livereload: LIVERELOAD_PORT
         },
         files: [
           '.tmp/styles/{,*/}*.css',
-          '<%%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',<% if (coffee) { %>
+          '<%%= yeoman.app %>/{,*/}*.html',<% if (coffee) { %>
           '.tmp/scripts/{,*/}*.js',<% } %>
           '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
